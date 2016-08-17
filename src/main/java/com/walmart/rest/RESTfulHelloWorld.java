@@ -31,9 +31,21 @@ import com.sun.javafx.collections.MappingChange.Map;
 @Path("/")
 public class RESTfulHelloWorld 
 {
-//	private static HashMap<Integer, Order> orders = new HashMap<Integer, Order>();
+	
 	@GET
-//	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/createTables") 
+	public Response createTables() { 
+		String output = "Table Creation done!";
+		try {
+			H2DatabaseConnection.createTables();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(output).build();
+	}
+	
+	@GET
 	@Produces("text/html")
 	public Response getStartingPage()
 	{
@@ -61,14 +73,13 @@ public class RESTfulHelloWorld
 		order = mapper.readValue(json, Order.class);
 		String item_list = "";
 		for (int i = 0; i < order.getItems().size(); i++) {
-			if (i < order.getItems().size() - 1) item_list = item_list + order.getItems().get(i) + ", ";
-			else item_list = item_list + order.getItems().get(i);
+			if (i < order.getItems().size() - 1) item_list = item_list + order.getItems().get(i).getItemID() + ", ";
+			else item_list = item_list + order.getItems().get(i).getItemID();
 		}
 		
-		H2DatabaseConnection.createTables();
 
 		String result = "Order created and items are " + item_list;
-		
+
 		return Response.status(201).entity(result).build();
 	}
 	

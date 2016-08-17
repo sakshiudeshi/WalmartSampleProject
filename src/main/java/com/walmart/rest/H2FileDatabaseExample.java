@@ -25,7 +25,6 @@ public class H2FileDatabaseExample {
             insertWithStatement();
             DeleteDbFiles.execute("~", "test", true);
             insertWithPreparedStatement();
-            System.out.print("Hello "); 
 
         } catch (SQLException e) {
             e.printStackTrace();
