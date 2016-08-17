@@ -43,7 +43,7 @@ public class RESTfulHelloWorld
 	}
 	
 	@GET
-	@Path("/order/")
+	@Path("/order")
 	public Response getOrder(@QueryParam("id") String id, @QueryParam("name") String name, @Context UriInfo uriInfo, String content) {
 	     MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters(); 
 	     String nameParam = queryParams.getFirst("name");
@@ -54,7 +54,7 @@ public class RESTfulHelloWorld
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/createOrder")
+	@Path("/order")
 	public Response postOrder(String json) throws JsonParseException, JsonMappingException, IOException, SQLException{
 		ObjectMapper mapper = new ObjectMapper();
 		Order order = null;
@@ -65,20 +65,10 @@ public class RESTfulHelloWorld
 			else item_list = item_list + order.getItems().get(i);
 		}
 		
-		Connection connection = H2FileDatabaseExample.getDBConnection();
-        Statement stmt = null;
-//        connection.setAutoCommit(false);
-        stmt = connection.createStatement();
+		H2DatabaseConnection.createTables();
+
 		String result = "Order created and items are " + item_list;
 		
-		ResultSet rs = stmt.executeQuery("select * from PERSON");
-        System.out.println("H2 Database inserted through Statement");
-        while (rs.next()) {
-            System.out.println("Id "+rs.getInt("id")+" Name "+rs.getString("name"));
-        }
-        stmt.close();
-        connection.commit();
-        
 		return Response.status(201).entity(result).build();
 	}
 	
